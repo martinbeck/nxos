@@ -1,4 +1,4 @@
-/* Copyright (c) 2007,2008 the NxOS developers
+/* Copyright (c) 2007,2008, 2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -9,6 +9,28 @@
 #include "base/types.h"
 #include "base/util.h"
 #include "base/assert.h"
+
+void memmove(void *dest, const void *source, U32 len) {
+  U8 *dst = (U8*)dest;
+  U8 *src = (U8*)source;
+
+  NX_ASSERT(dst != NULL);
+  NX_ASSERT(src != NULL);
+
+  if(dst == src) {
+     // Nothing to copy!
+  } else if(src > dst) {
+    while (len--) {
+      *dst++ = *src++;
+    }
+  } else {
+    dst = dst + len;
+    src = src + len;
+    while (len--) {
+      *--dst = *--src;
+    }
+  }
+}
 
 void memcpy(void *dest, const void *source, U32 len) {
   U8 *dst = (U8*)dest;

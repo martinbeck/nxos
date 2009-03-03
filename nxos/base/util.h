@@ -2,7 +2,7 @@
  *  @brief Generally useful functions from libc.
  */
 
-/* Copyright (c) 2007,2008 the NxOS developers
+/* Copyright (c) 2007,2008,2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -31,6 +31,14 @@
  *          times! Use only with pure arguments.
  */
 #define MAX(x, y) ((x) > (y) ? (x): (y))
+
+/** Copy @a len bytes from @a src to @a dest, the regions may overlap.
+ *
+ * @param dest Destination of the copy.
+ * @param src Source of the copy.
+ * @param len Number of bytes to copy.
+ */
+void memmove(void *dest, const void *source, U32 len);
 
 /** Copy @a len bytes from @a src to @a dest.
  *
