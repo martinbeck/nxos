@@ -2,7 +2,7 @@
  *  @brief Motor control interface.
  */
 
-/* Copyright (C) 2007 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -77,6 +77,16 @@ void nx_motors_rotate_time(U8 motor, S8 speed, U32 ms, bool brake);
  * @return The tachometer counter value for @a motor.
  */
 U32 nx_motors_get_tach_count(U8 motor);
+
+/** Reset the internal tachometer counter value for @a motor.
+ *
+ * @note Currently, this does not work correctly, because the direction
+ * is important for this setting and maybe the tacho is incremented
+ * or decremented in the wrong direction with the next system tick. This
+ * happens for example, if you stop the motors, reset the tachometer and
+ * rotate them in the other direction immediately.
+ */
+void nx_motors_reset_tach_count(U8 motor);
 
 /*@}*/
 /*@}*/

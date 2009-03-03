@@ -1,4 +1,4 @@
-/* Copyright (C) 2007 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -252,4 +252,10 @@ U32 nx_motors_get_tach_count(U8 motor) {
   NX_ASSERT(motor < NXT_N_MOTORS);
 
   return motors_state[motor].current_count;
+}
+
+void nx_motors_reset_tach_count(U8 motor) {
+  NX_ASSERT(motor < NXT_N_MOTORS);
+
+  motors_state[motor].current_count = 0;
 }
