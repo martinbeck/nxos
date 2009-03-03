@@ -2,7 +2,7 @@
  *  @brief Basic type definitions for the Arm7 platform.
  */
 
-/* Copyright (c) 2007,2008 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -36,6 +36,9 @@ typedef U8 bool; /**< Boolean data type. */
 
 /** A function that takes no arguments and returns nothing. */
 typedef void (*nx_closure_t)(void);
+
+/** Attribute for functions which need to run in RAM (e.g. Flash writing). */
+#define nx__ram_function __attribute__ ((noinline, long_call, section (".ram_text")))
 
 /*@}*/
 

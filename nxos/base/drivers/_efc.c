@@ -1,4 +1,4 @@
-/* Copyright (c) 2008 the NxOS developers
+/* Copyright (c) 2008-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -18,16 +18,34 @@
 #include "base/drivers/systick.h"
 #include "base/drivers/_efc.h"
 
+#include "base/drivers/_twi.h"
+#include "base/drivers/_avr.h"
+
 #define EFC_WRITE ((EFC_WRITE_KEY << 24) + EFC_CMD_WP)
 #define EFC_THROTTLE_TIMER 2
 
 void nx__efc_init(void) {
 }
 
-static bool nx__efc_do_write(U32 page) {
+static nx__ram_function bool nx__efc_do_write(U32 page) {
   U32 ret;
 
   NX_ASSERT(page < EFC_PAGES);
+
+  // turn off systick callbacks
+  nx_systick_suspend();
+
+  // sync
+  nx_systick_wait_ms(1);
+
+  // manually call avr update
+  nx__avr_fast_update();
+
+  // wait for avr update
+  while (!nx__twi_ready());
+
+  // disable interrupts
+  nx_interrupts_disable();
 
   /* Trigger the flash write command. */
   *AT91C_MC_FCR = EFC_WRITE + ((page & 0x000003FF) << 8);
@@ -36,6 +54,15 @@ static bool nx__efc_do_write(U32 page) {
   do {
     ret = *AT91C_MC_FSR;
   } while (!(ret & AT91C_MC_FRDY));
+
+  // reenable interrupts
+  nx_interrupts_enable();
+
+  // sync
+  nx_systick_wait_ms(1);
+
+  // turn on systick callbacks
+  nx_systick_resume();
 
   /* Check the command result by reading the status register
    * only once to avoid the bits being cleared.
@@ -46,14 +73,14 @@ static bool nx__efc_do_write(U32 page) {
   return TRUE;
 }
 
-static inline void nx__efc_wait_for_flash(void) {
+static void nx__efc_wait_for_flash(void) {
   while (!(*AT91C_MC_FSR & AT91C_MC_FRDY));
 }
 
 /* Write one page at the given page number in the flash.
  * Use interrupt-driven flash programming ?
  */
-bool nx__efc_write_page(U32 *data, U32 page) {
+__attribute__((noinline)) bool nx__efc_write_page(U32 *data, U32 page) {
   U8 i;
 
   NX_ASSERT(page < EFC_PAGES);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2007,2008 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -89,6 +89,8 @@ SECTIONS {
    */
   .ram_text : {
     . = ALIGN(16);
+    base/drivers/_efc.o
+    base/interrupts.o
     *.oram(*.text *.text.* *.glue*) /* TODO: align? */
     *.oram(*.rodata *.rodata.*)
     . = ALIGN(16);
@@ -168,7 +170,7 @@ SECTIONS {
 
     /* supervisor stack */
     __supervisor_stack_bottom__ = . ;
-    . += 0x400; /* 1k supervisor stack. */
+    . += 0x1600; /* 4k supervisor stack. */
     . = ALIGN(16);
     __supervisor_stack__ = .;
     __supervisor_stack_top__ = . ;

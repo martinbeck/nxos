@@ -1,4 +1,4 @@
-/* Copyright (C) 2007 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -64,6 +64,23 @@ static void systick_sched(void) {
   /* Acknowledge the interrupt. */
   nx_aic_clear(SCHEDULER_SYSIRQ);
 
+  /* Keeping up with the AVR link is a crucial task in the system, and
+  * must absolutely be kept up with at all costs. Thus, handling it
+  * in the low-level dispatcher is not enough, and we promote it to
+  * being handled directly here.
+  *
+  * As a result, this handler must be *very* fast.
+  *
+  * NOTE: Moved this to low-level handler for enabling faster Flash
+  * writings with a ROM kernel. Lejos does it similar, thats the reason.
+  */
+  nx__avr_fast_update();
+
+  /* The LCD dirty display routine can be done here too, since it is
+  * very short.
+  */
+  nx__lcd_fast_update();
+
   /* Call into the scheduler. */
   if (scheduler_cb)
     scheduler_cb();
@@ -79,20 +96,6 @@ static void systick_isr(void) {
 
   /* Do the system timekeeping. */
   systick_time++;
-
-  /* Keeping up with the AVR link is a crucial task in the system, and
-   * must absolutely be kept up with at all costs. Thus, handling it
-   * in the low-level dispatcher is not enough, and we promote it to
-   * being handled directly here.
-   *
-   * As a result, this handler must be *very* fast.
-   */
-  nx__avr_fast_update();
-
-  /* The LCD dirty display routine can be done here too, since it is
-   * very short.
-   */
-  nx__lcd_fast_update();
 
   if (!scheduler_inhibit)
     nx_systick_call_scheduler();
@@ -124,7 +127,7 @@ U32 nx_systick_get_ms(void) {
 }
 
 void nx_systick_wait_ms(U32 ms) {
-  U32 final = systick_time + ms;
+  volatile U32 final = systick_time + ms;
 
   while (systick_time < final);
 }
@@ -145,7 +148,7 @@ inline void nx_systick_call_scheduler(void) {
   /* If the application kernel set a scheduling callback, trigger the
    * lower priority IRQ in which the scheduler runs.
    */
-  if (scheduler_cb)
+  //if (scheduler_cb)
     nx_aic_set(SCHEDULER_SYSIRQ);
 }
 
@@ -155,4 +158,12 @@ void nx_systick_mask_scheduler(void) {
 
 void nx_systick_unmask_scheduler(void) {
   scheduler_inhibit = FALSE;
+}
+
+void nx_systick_suspend(void) {
+  nx_aic_disable(SCHEDULER_SYSIRQ);
+}
+
+void nx_systick_resume(void) {
+  nx_aic_enable(SCHEDULER_SYSIRQ);
 }

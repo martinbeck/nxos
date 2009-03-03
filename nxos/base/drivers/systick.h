@@ -2,7 +2,7 @@
  *  @brief System timer interface.
  */
 
-/* Copyright (C) 2007 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -88,6 +88,12 @@ void nx_systick_mask_scheduler(void);
  * deactivating it with nx_systick_mask_scheduler().
  */
 void nx_systick_unmask_scheduler(void);
+
+/** Suspend the low priority interrupt */
+void nx_systick_suspend(void);
+
+/** Resume the low priority interrupt */
+void nx_systick_resume(void);
 
 /*@}*/
 /*@}*/
