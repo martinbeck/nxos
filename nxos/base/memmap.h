@@ -7,7 +7,7 @@
  * applications.
  */
 
-/* Copyright (c) 2007,2008 the NxOS developers
+/* Copyright (c) 2007,2008,2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -58,6 +58,8 @@ extern U8 __bss_end__;
 
 extern U8 __stack_start__;
 extern U8 __stack_end__;
+
+extern U8 __rom_userspace_start__;
 
 extern U8 __rom_end__;
 

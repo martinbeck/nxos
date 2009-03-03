@@ -1,4 +1,4 @@
-/* Copyright (c) 2008 the NxOS developers
+/* Copyright (c) 2008-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -1012,7 +1012,7 @@ static fs_err_t nx_fs_swap_regions(U32 start1, U32 dest1, U32 len1,
 }
 
 fs_err_t nx_fs_defrag_for_file_by_origin(U32 origin) {
-  U32 next_origin=0, next_hole, last_origin, last_npages, npages;
+  U32 next_origin=0, next_hole=0, last_origin, last_npages, npages;
   volatile U32 *metadata;
   fs_err_t err;
 

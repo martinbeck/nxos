@@ -1,4 +1,4 @@
-/* Copyright (c) 2007,2008 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -115,7 +115,7 @@ static rcmd_err_t nx_rcmd_move(char *line) {
   nx_rcmd_tokenize(spec, ',', &ntokens, subind);
   for (i=0; i<NXT_N_MOTORS; i++) {
     if (ntokens <= i) {
-      success = atos32(spec + subind[ntokens-1], &speeds[i]);
+      success = atos32(spec + subind[(U32)(ntokens-1)], &speeds[i]);
     } else {
       success = atos32(spec + subind[i], &speeds[i]);
     }
@@ -130,7 +130,7 @@ static rcmd_err_t nx_rcmd_move(char *line) {
   nx_rcmd_tokenize(spec, ',', &ntokens, subind);
   for (i=0; i<NXT_N_MOTORS; i++) {
     if (ntokens <= i) {
-      success = atou32(spec + subind[ntokens-1], &durations[i]);
+      success = atou32(spec + subind[(U32)(ntokens-1)], &durations[i]);
     } else {
       success = atou32(spec + subind[i], &durations[i]);
     }

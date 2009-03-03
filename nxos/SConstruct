@@ -140,8 +140,8 @@ def appkernel_tool(env):
             ">$TARGET" % (kernelsize, romkernelsize))
 
         # Build the SAM-BA and ROM kernel variants.
-        AppKernelVariant(env, kernel_name, 'samba', app_kernel, app_kernel_lds,
-                         ['SAMBA_ONLY'], ['ROM_ONLY'])
+#        AppKernelVariant(env, kernel_name, 'samba', app_kernel, app_kernel_lds,
+#                         ['SAMBA_ONLY'], ['ROM_ONLY'])
         AppKernelVariant(env, kernel_name, 'rom', app_kernel, app_kernel_lds,
                          ['ROM_ONLY'], ['SAMBA_ONLY'])
     appkernel_func = new.instancemethod(AppKernel, env, env.__class__)
@@ -205,14 +205,14 @@ if not env.GetOption('clean'):
     conf.CheckDoxygen()
     env = conf.Finish()
 
-env.Replace(CCFLAGS= ['-mcpu=arm7tdmi', '-Os', '-Wextra', '-Wall', '-Werror',
+env.Replace(CCFLAGS= ['-mcpu=arm7tdmi', '-O3', '-Wextra', '-Wall', '-Werror',
                       '-Wno-div-by-zero', '-Wfloat-equal', '-Wshadow',
                       '-Wpointer-arith', '-Wbad-function-cast',
                       '-Wmissing-prototypes', '-ffreestanding',
                       '-fsigned-char', '-ffunction-sections',
                       '-fdata-sections', '-fomit-frame-pointer',
                       '-msoft-float', '-mthumb-interwork', '-mthumb'],
-            ASFLAGS = ['-Wall', '-Werror', '-Os',
+            ASFLAGS = ['-Wall', '-Werror', '-O3',
                        '-Wa,-mcpu=arm7tdmi,-mfpu=softfpa,-mthumb-interwork'])
 
 # Build the baseplate, and all selected application kernels.
