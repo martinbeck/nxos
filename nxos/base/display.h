@@ -2,7 +2,7 @@
  *  @brief Display handling interface.
  */
 
-/* Copyright (C) 2007 the NxOS developers
+/* Copyright (c) 2007-2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -49,6 +49,14 @@ void nx_display_clear(void);
  */
 void nx_display_auto_refresh(bool auto_refresh);
 
+/** Enable or disable display scrolling.
+ *
+ * @param enable TRUE if the display should scroll when its
+ * lower bound is reached, FALSE if the cursor should simply wrap
+ * to (0,0).
+ */
+void nx_display_scroll_ok(bool enable) ;
+
 /** Start a display refresh cycle.
  *
  * @note This call has very little effect if the display is in
@@ -57,6 +65,12 @@ void nx_display_auto_refresh(bool auto_refresh);
  * difference.
  */
 inline void nx_display_refresh(void);
+
+/** Returns the x cursor position. */
+U8 nx_display_cursor_get_pos_x(void);
+
+/** Returns the y cursor position. */
+U8 nx_display_cursor_get_pos_y(void);
 
 /** Move the cursor to line @a x and column @a y.
  *

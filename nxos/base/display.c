@@ -1,4 +1,4 @@
-/* Copyright (c) 2008 the NxOS developers
+/* Copyright (c) 2008, 2009 the NxOS developers
  *
  * See AUTHORS for a full list of the developers.
  *
@@ -28,6 +28,10 @@ static struct {
   /* Whether the display is automatically refreshed after every call
    * to display functions. */
   bool auto_refresh;
+
+  /* If true, the display scrolls after a newline in the last line,
+   * otherwise it simply wraps to the beginning. */
+  bool scroll_ok;
 
   /* The position of the text cursor. This is used for easy displaying
    * of text in a console-like manner.
@@ -60,6 +64,11 @@ void nx_display_clear(void) {
 void nx_display_auto_refresh(bool auto_refresh) {
   display.auto_refresh = auto_refresh;
   dirty_display();
+}
+
+/* Enable or disable display scrolling */
+void nx_display_scroll_ok(bool enable) {
+  display.scroll_ok = enable;
 }
 
 
@@ -107,8 +116,25 @@ static inline void update_cursor(bool inc_y) {
     display.cursor.y++;
   }
 
-  if (display.cursor.y >= LCD_HEIGHT)
-    display.cursor.y = 0;
+  if (display.cursor.y >= LCD_HEIGHT) {
+    if (display.scroll_ok) {
+      memcpy(&display.buffer[0][0], &display.buffer[1][0],
+             sizeof(display.buffer) - sizeof(display.buffer[0]));
+      memset(&display.buffer[LCD_HEIGHT-1], 0, sizeof(display.buffer[0]));
+      display.cursor.y = LCD_HEIGHT - 1;
+      dirty_display();
+    } else {
+      display.cursor.y = 0;
+    }
+  }
+}
+
+U8 nx_display_cursor_get_pos_x() {
+  return display.cursor.x;
+}
+
+U8 nx_display_cursor_get_pos_y() {
+  return display.cursor.y;
 }
 
 void nx_display_cursor_set_pos(U8 x, U8 y) {
