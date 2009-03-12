@@ -114,7 +114,7 @@ void nx_sensors_analog_enable(U32 sensor) {
 
 U32 nx_sensors_analog_get(U32 sensor) {
   NX_ASSERT(sensor < NXT_N_SENSORS);
-  NX_ASSERT(sensors_mode[sensor] == ANALOG);
+  //NX_ASSERT(sensors_mode[sensor] == ANALOG);
 
   return nx__avr_get_sensor_value(sensor);
 }
